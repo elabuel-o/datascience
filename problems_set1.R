@@ -12,7 +12,6 @@
 ### Part 1. Data
 ### ------------------------------------------------------
 
-install.packages("AER")
 library(AER)
 data("GrowthDJ")
 
@@ -37,7 +36,6 @@ growth_data <- GrowthDJ %>% rename(oil_producer = oil, data_factor = inter,
 ### -------------------------------------------------------
 
 ## Dummies
-install.packages("dummies")
 library(dummies)
 
 growth_data[, 1] <- dummy(growth_data[, 1]) ## For oil_producer
@@ -46,3 +44,27 @@ growth_data[, 3] <- dummy(growth_data[, 3]) ## For oecd_member
 
 ## Interaction
 growth_data$interact_gdp60_oilfactor <- growth_data$gdp60*growth_data$oil_producer
+
+### -------------------------------------------------------
+## Part 2.2 Correlation Matrix
+### -------------------------------------------------------
+
+## Selecting variables and new data frame
+new_vars <- c("gdp60", "gdp85", "popgrowth_av", "invest_av", 
+              "school_av", "literacy60")
+growth_data_bis <- growth_data[new_vars]
+
+## Correlation matrix
+corr_mat <- cor(growth_data_bis, use = "pairwise.complete.obs")
+corr_mat
+
+## Linear regression 
+mod1 <- lm(gdpgrowth_av ~ gdp60 + popgrowth_av + invest_av,
+           data = growth_data)
+
+
+## Another linear regression, now including school_av 
+mod2 <- lm(gdpgrowth_av ~ school_av + gdp60 + popgrowth_av + invest_av,
+           data = growth_data)
+
+
